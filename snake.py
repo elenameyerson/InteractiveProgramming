@@ -30,6 +30,6 @@ identify tongue
 identify movement of tongue
 translate movements into game commands
 
-classe:
+classes:
 scoreboard (displays score to player, possibly also high score)
 '''
