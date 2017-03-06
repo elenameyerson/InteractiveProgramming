@@ -44,45 +44,79 @@ classes:
 scoreboard (displays score to player, possibly also high score)
 '''
 
+import pygame
+from pygame.locals import *
+
+
 class Window:
     """Represents the window that the game is played in.
     Attributes include board length and width.
     """
+    def __init__(self):
+        self._running = True
+        self._display_surf = None
+        self.size = self.weight, self.height = 750, 750
 
-    def __init__(self,length=1000,width=1000):
-        self.length = length
-        self.width = width
+    def on_init(self):
+        pygame.init()
+        self._display_surf = pygame.display.set_mode(self.size)
+        self._running = True
+
+    def on_event(self, event):
+        if event.type == pygame.QUIT:
+            self._running = False
+
+    def on_loop(self):
         pass
 
-    #use pygame to implement showing window
+    def on_render(self):
+        food = Food()
+        food.showBlock()
+        pygame.display.update()
 
-class Block:
+    def on_cleanup(self):
+        pygame.quit()
+
+    def on_execute(self):
+        if self.on_init() == False:
+            self._running = False
+
+        self.on_init()
+        while(self._running):
+            for event in pygame.event.get():
+                self.on_event(event)
+            self.on_loop()
+            self.on_render()
+        self.on_cleanup()
+
+
+class Block(pygame.Rect):
     """Represents the blocks that appear in the window and make up the food and
     the parts of the snake.
     """
-    def __init__(self, length = 10, width = 10, x, y, color):
-        self.length = length
-        self.width = width
-        self.x = x
-        self.y = y
+    def __init__(self, height=100, width=100, x=0, y=0, color=(240, 240, 240)):
+        pygame.Rect.__init__(self, x, y, width, height)
         self.color = color
-        pass
 
     def showBlock(self):
-        pass
+        pygame.draw.rect(screen._display_surf, self.color, self)
 
     def moveBlock(self, dx, dy):
         pass
-    #use pygame again lol
+
 
 class Food(Block):
     """Represents the food that randomly appears in the window. Made up of randomly
     placed blocks.
     """
-    def __init__(self, color, point_value = 10):
-        self.color = color
+    def __init__(self, height=100, width=100, x=0, y=0, color=(240, 240, 240), point_value=10):
+        Block.__init__(self, height, width, x, y, color)
         self.point_value = point_value
-        pass
 
     def random_placement(self):
-        
+        pass
+
+
+if __name__ == "__main__":
+    screen = Window()
+    screen.on_execute()
