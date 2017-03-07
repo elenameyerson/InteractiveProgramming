@@ -13,13 +13,14 @@ BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 BlockSize = 25
+WINDOW = 1000
 
 
 # class Food(pygame.Rect):
 
 
 class Snake(object):
-    def __init__(self, length=10, x=0, y=600, direction='d'):
+    def __init__(self, length=30, x=0, y=600, direction='d'):
         self.x = x
         self.y = y
         self.direction = direction
@@ -54,6 +55,21 @@ class Snake(object):
             xfact = 1
         return [xfact, yfact]
 
+    def check_collision(self):
+        count = 0
+        for block in self.blocks:
+            if count != 0 and self.blocks[0].x == block.x and self.blocks[0].y == block.y:
+                return True
+            count += 1
+        return False
+
+    def check_boundary(self):
+        x = self.blocks[0].x
+        y = self.blocks[0].y
+        if x < 0 or y < 0 or x >= WINDOW or y >= WINDOW:
+            return True
+        return False
+
 
 class SnakeView(object):
     def __init__(self, model):
@@ -81,20 +97,25 @@ class SnakeController(object):
         if event.type == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
             if keys[K_LEFT]:
-                self.models[0].direction = 'l'
+                if self.models[0].direction != 'r':
+                    self.models[0].direction = 'l'
 
             if keys[K_RIGHT]:
-                self.models[0].direction = 'r'
+                if self.models[0].direction != 'l':
+                    self.models[0].direction = 'r'
 
             if keys[K_UP]:
-                self.models[0].direction = 'u'
+                if self.models[0].direction != 'd':
+                    self.models[0].direction = 'u'
 
             if keys[K_DOWN]:
-                self.models[0].direction = 'd'
+                if self.models[0].direction != 'u':
+                    self.models[0].direction = 'd'
+
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((1000, 1000))
+    screen = pygame.display.set_mode((WINDOW, WINDOW))
 
     # food = Food()
     snake = Snake()
@@ -120,10 +141,17 @@ def main():
         for view in views:
             view.draw(screen)
 
+        if snake.check_collision():
+            running = False
+
+        if snake.check_boundary():
+            running = False
+
         pygame.display.update()
         time.sleep(.1)
 
     pygame.quit()
+
 
 if __name__ == '__main__':
     main()
