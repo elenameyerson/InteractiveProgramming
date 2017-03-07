@@ -77,7 +77,23 @@ class Window:
         #got another rectangle to show up when key was pressed, but the other one doesnt go away
         #need to implement move function
         if keys[K_LEFT]:
+            print('left')
             food.moveBlock(100,100)
+            pygame.display.update()
+
+        if keys[K_RIGHT]:
+            print('right')
+            food.moveBlock(100,0)
+            pygame.display.update()
+
+        if keys[K_UP]:
+            print('up')
+            food.moveBlock(100,0)
+            pygame.display.update()
+
+        if keys[K_DOWN]:
+            print('down')
+            food.moveBlock(100,0)
             pygame.display.update()
 
     def on_cleanup(self):
@@ -108,7 +124,7 @@ class Block(pygame.Rect):
         pygame.draw.rect(screen._display_surf, self.color, self)
 
     def moveBlock(self, dx, dy):
-        pygame.Rect.move(dx, dy)
+        self.move_ip(dx, dy)
 
 
 class Food(Block):
