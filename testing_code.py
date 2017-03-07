@@ -8,6 +8,7 @@ Date   : 2017-03-05
 import pygame
 from pygame.locals import *
 import time
+import random
 
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
@@ -64,13 +65,19 @@ class SnakeView(object):
         for rect in model.blocks:
             pygame.draw.rect(surface, BLUE, rect)
 
+class Food(object):
+    def __init__(self):
+        self.x = random.randint(0,40)*25
+        self.y = random.randint(0,40)*25
+        self.rect = pygame.Rect(self.x, self.y, BlockSize, BlockSize)
 
 class FoodView(object):
     def __init__(self, model):
         self.model = model
 
     def draw(self, surface):
-        pass
+        model = self.model
+        pygame.draw.rect(surface, RED, model.rect)
 
 
 class SnakeController(object):
@@ -97,12 +104,15 @@ def main():
     screen = pygame.display.set_mode((1000, 1000))
 
     # food = Food()
+    food = Food()
+    models = [food]
+
     snake = Snake()
     models = [snake]
 
     views = []
     views.append(SnakeView(snake))
-    # views.append(FoodView(food))
+    views.append(FoodView(food))
 
     controller = SnakeController(models)
 
