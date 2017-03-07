@@ -6,18 +6,20 @@ Date   : 2017-03-05
 """
 
 import pygame
+from pygame.locals import *
 import time
 
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
-BlockSize = 50
+RED = (255, 0, 0)
+BlockSize = 25
 
 
 # class Food(pygame.Rect):
 
 
 class Snake(object):
-    def __init__(self, length=5, x=0, y=600, direction='d'):
+    def __init__(self, length=10, x=0, y=600, direction='d'):
         self.x = x
         self.y = y
         self.direction = direction
@@ -76,8 +78,19 @@ class SnakeController(object):
         self.models = models
 
     def handle_event(self, event):
-        pass
+        if event.type == pygame.KEYDOWN:
+            keys = pygame.key.get_pressed()
+            if keys[K_LEFT]:
+                self.models[0].direction = 'l'
 
+            if keys[K_RIGHT]:
+                self.models[0].direction = 'r'
+
+            if keys[K_UP]:
+                self.models[0].direction = 'u'
+
+            if keys[K_DOWN]:
+                self.models[0].direction = 'd'
 
 def main():
     pygame.init()
@@ -108,7 +121,7 @@ def main():
             view.draw(screen)
 
         pygame.display.update()
-        time.sleep(.25)
+        time.sleep(.1)
 
     pygame.quit()
 
