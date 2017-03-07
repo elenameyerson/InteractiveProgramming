@@ -9,6 +9,7 @@ import pygame
 from pygame.locals import *
 import time
 import random
+import math
 
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
@@ -17,11 +18,9 @@ BlockSize = 25
 WINDOW = 1000
 
 
-# class Food(pygame.Rect):
-
 
 class Snake(object):
-    def __init__(self, length=30, x=0, y=600, direction='d'):
+    def __init__(self, length=5, x=0, y=600, direction='d'):
         self.x = x
         self.y = y
         self.direction = direction
@@ -56,6 +55,34 @@ class Snake(object):
             xfact = 1
         return [xfact, yfact]
 
+    def grow_snake(self, num):
+        difx = self.blocks[-1].x-self.blocks[-2].x
+        dify = self.blocks[-1].y-self.blocks[-2].y
+
+        if difx == 0:
+            if dify < 0:
+                #up
+                yfact = -1
+                xfact = 0
+            else:
+                #down
+                yfact = 1
+                xfact = 0
+        elif difx < 0:
+            #left
+            yfact = 0
+            xfact = -1
+        else:
+            #right
+            yfact = 0
+            xfact = 1
+
+        for i in range(num):
+            ypos = self.blocks[-1].y + BlockSize*i*yfact
+            xpos = self.blocks[-1].x + BlockSize*i*xfact
+            block = pygame.Rect(xpos, ypos, BlockSize, BlockSize)
+            self.blocks.append(block)
+
     def check_collision(self):
         count = 0
         for block in self.blocks:
@@ -71,6 +98,10 @@ class Snake(object):
             return True
         return False
 
+    def check_food(self,food):
+        if self.blocks[0].x == food.x and self.blocks[0].y == food.y:
+            return True
+        return False
 
 class SnakeView(object):
     def __init__(self, model):
@@ -83,8 +114,8 @@ class SnakeView(object):
 
 class Food(object):
     def __init__(self):
-        self.x = random.randint(0,40)*25
-        self.y = random.randint(0,40)*25
+        self.x = random.randint(0,39)*25
+        self.y = random.randint(0,39)*25
         self.rect = pygame.Rect(self.x, self.y, BlockSize, BlockSize)
 
 class FoodView(object):
@@ -124,6 +155,8 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((WINDOW, WINDOW))
 
+    SCORE = 0
+
     # food = Food()
     food = Food()
     models = [food]
@@ -157,8 +190,18 @@ def main():
         if snake.check_boundary():
             running = False
 
+        if snake.check_food(food):
+            food.__init__()
+            snake.grow_snake(3)
+            SCORE += 1
+            print(SCORE)
+
+        if SCORE == 99:
+            running = False
+            #print "You Win!"
+
         pygame.display.update()
-        time.sleep(.1)
+        time.sleep(.1-.01*math.sqrt(SCORE))
 
     pygame.quit()
 
