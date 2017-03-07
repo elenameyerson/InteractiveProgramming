@@ -14,9 +14,9 @@ import math
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+WHITE = (255, 255, 255)
 BlockSize = 25
 WINDOW = 1000
-
 
 
 class Snake(object):
@@ -61,19 +61,19 @@ class Snake(object):
 
         if difx == 0:
             if dify < 0:
-                #up
+                # up
                 yfact = -1
                 xfact = 0
             else:
-                #down
+                # down
                 yfact = 1
                 xfact = 0
         elif difx < 0:
-            #left
+            # left
             yfact = 0
             xfact = -1
         else:
-            #right
+            # right
             yfact = 0
             xfact = 1
 
@@ -98,10 +98,14 @@ class Snake(object):
             return True
         return False
 
-    def check_food(self,food):
+    def check_food(self, food):
         if self.blocks[0].x == food.x and self.blocks[0].y == food.y:
             return True
         return False
+
+    def reset(self):
+        self.__init__()
+
 
 class SnakeView(object):
     def __init__(self, model):
@@ -112,11 +116,19 @@ class SnakeView(object):
         for rect in model.blocks:
             pygame.draw.rect(surface, BLUE, rect)
 
+
 class Food(object):
     def __init__(self):
-        self.x = random.randint(0,39)*25
-        self.y = random.randint(0,39)*25
+        self.x = random.randint(0, WINDOW/BlockSize-1)*BlockSize
+        self.y = random.randint(0, WINDOW/BlockSize-1)*BlockSize
         self.rect = pygame.Rect(self.x, self.y, BlockSize, BlockSize)
+
+    def step(self):
+        pass
+
+    def reset(self):
+        self.__init__()
+
 
 class FoodView(object):
     def __init__(self, model):
@@ -125,6 +137,31 @@ class FoodView(object):
     def draw(self, surface):
         model = self.model
         pygame.draw.rect(surface, RED, model.rect)
+
+
+class Score(object):
+    def __init__(self, val=0):
+        self.val = val
+
+    def add_point(self, points=1):
+        self.val += points
+
+    def step(self):
+        pass
+
+    def reset(self):
+        self.__init__()
+
+
+class ScoreView(object):
+    def __init__(self, model):
+        self.model = model
+
+    def draw(self, surface):
+        score = self.model.val
+        font = pygame.font.SysFont("monospace", 15)
+        label = font.render("Score: " + str(score), 1, WHITE)
+        surface.blit(label, (5, 5))
 
 
 class SnakeController(object):
@@ -155,18 +192,15 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((WINDOW, WINDOW))
 
-    SCORE = 0
-
-    # food = Food()
+    score = Score()
     food = Food()
-    models = [food]
-
     snake = Snake()
-    models = [snake]
+    models = [snake, food, score]
 
     views = []
     views.append(SnakeView(snake))
     views.append(FoodView(food))
+    views.append(ScoreView(score))
 
     controller = SnakeController(models)
 
@@ -185,23 +219,33 @@ def main():
             view.draw(screen)
 
         if snake.check_collision():
-            running = False
+            for model in models:
+                model.reset()
 
         if snake.check_boundary():
-            running = False
+            for model in models:
+                model.reset()
 
         if snake.check_food(food):
-            food.__init__()
+            on_snake = True
+            while on_snake:
+                food.__init__()
+                on_snake = False
+                for block in snake.blocks:
+                    if block.x == food.x and block.y == food.y:
+                        this = True
+                    else:
+                        this = False
+                    on_snake = on_snake or this
             snake.grow_snake(3)
-            SCORE += 1
-            print(SCORE)
+            score.add_point()
+            print(score.val)
 
-        if SCORE == 99:
+        if score.val == 99:
             running = False
-            #print "You Win!"
 
         pygame.display.update()
-        time.sleep(.1-.01*math.sqrt(SCORE))
+        time.sleep(.1-.01*math.sqrt(score.val))
 
     pygame.quit()
 
