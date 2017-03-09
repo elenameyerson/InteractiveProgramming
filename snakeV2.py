@@ -2,8 +2,10 @@
 
 Author : Elena, Lucky
 Course : Olin Software Design Spring 2017
-Date   : 2017-03-05
+Date   : 2017-03-09
 """
+
+"""Import packages and set global variables (colors, window,block size)"""
 
 import pygame
 from pygame.locals import *
@@ -18,6 +20,10 @@ WHITE = (255, 255, 255)
 BlockSize = 25
 WINDOW = 1000
 
+"""Defines snake class with methods that initialize and reset the snake object,
+move it in the window, change the direction of its travel, and do checks to make
+sure that the snake is in a valid position (ie: not hitting the wall or itself)
+"""
 
 class Snake(object):
     def __init__(self, length=5, x=0, y=600, direction='d'):
@@ -107,6 +113,9 @@ class Snake(object):
         self.__init__()
 
 
+"""Defines a class that visualizes the snake in the gameplay window.
+"""
+
 class SnakeView(object):
     def __init__(self, model):
         self.model = model
@@ -116,6 +125,10 @@ class SnakeView(object):
         for rect in model.blocks:
             pygame.draw.rect(surface, BLUE, rect)
 
+
+"""Defines a class that initializes the food objects in random locations in the
+window and can reset their locations.
+"""
 
 class Food(object):
     def __init__(self):
@@ -130,6 +143,8 @@ class Food(object):
         self.__init__()
 
 
+"""Visualizes the food objects in the gameplay window."""
+
 class FoodView(object):
     def __init__(self, model):
         self.model = model
@@ -138,6 +153,10 @@ class FoodView(object):
         model = self.model
         pygame.draw.rect(surface, RED, model.rect)
 
+
+"""Defines the score object and has methods to add points to the score and reset
+it for each new game.
+"""
 
 class Score(object):
     def __init__(self, val=0):
@@ -153,6 +172,10 @@ class Score(object):
         self.__init__()
 
 
+"""Defines a class that visualizes and continuously updates the score in the
+gameplay window.
+"""
+
 class ScoreView(object):
     def __init__(self, model):
         self.model = model
@@ -163,6 +186,10 @@ class ScoreView(object):
         label = font.render("Score: " + str(score), 1, WHITE)
         surface.blit(label, (5, 5))
 
+
+"""Defines class that takes input from player in the form of the up/down/left/right
+arrows on the keypad.
+"""
 
 class SnakeController(object):
     def __init__(self, models):
@@ -187,6 +214,11 @@ class SnakeController(object):
                 if self.models[0].direction != 'u':
                     self.models[0].direction = 'd'
 
+
+"""Defines gameplay. Creates gameplay window and initializes objects in game.
+Main loop allows snake to move forward at a rate that depends on the score,
+turning with user input. Checks each loop for interference with wall, snake body,
+or food object. Continuously draws and updates screen."""
 
 def main():
     pygame.init()
