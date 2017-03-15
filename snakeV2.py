@@ -4,9 +4,6 @@ Author : Elena, Lucky
 Course : Olin Software Design Spring 2017
 Date   : 2017-03-09
 """
-
-"""Import packages and set global variables (colors, window,block size)"""
-
 import pygame
 from pygame.locals import *
 import time
@@ -25,6 +22,7 @@ WINDOW = 1000
 move it in the window, change the direction of its travel, and do checks to make
 sure that the snake is in a valid position (ie: not hitting the wall or itself)
 """
+
 
 class Snake(object):
     """ The snake class is a model of our snake object.
@@ -159,6 +157,7 @@ class Snake(object):
 """Defines a class that visualizes the snake in the gameplay window.
 """
 
+
 class SnakeView(object):
     def __init__(self, model):
         self.model = model
@@ -175,6 +174,7 @@ class SnakeView(object):
 """Defines a class that initializes the food objects in random locations in the
 window and can reset their locations.
 """
+
 
 class Food(object):
     """ The food model contains one rect object which is randomly assigned an x and y position.
@@ -195,6 +195,7 @@ class Food(object):
 
 """Visualizes the food objects in the gameplay window."""
 
+
 class FoodView(object):
     """ FoodView simply draws the one rectangle which represents the food at the random x and y position its init func generates. """
     def __init__(self, model):
@@ -208,6 +209,7 @@ class FoodView(object):
 """Defines the score object and has methods to add points to the score and reset
 it for each new game.
 """
+
 
 class Score(object):
     """ Score model. Starts at 0 by default and add_point adds a point when the snake eats the food. """
@@ -228,6 +230,7 @@ class Score(object):
 gameplay window.
 """
 
+
 class ScoreView(object):
     """ ScoreView uses blit to draw text on the screen containing the current score. """
     def __init__(self, model):
@@ -243,6 +246,7 @@ class ScoreView(object):
 """Defines class that takes input from player in the form of the up/down/left/right
 arrows on the keypad.
 """
+
 
 class SnakeController(object):
     """ The snake controller manages input from the user in the form of keypresses on
@@ -276,6 +280,7 @@ class SnakeController(object):
 Main loop allows snake to move forward at a rate that depends on the score,
 turning with user input. Checks each loop for interference with wall, snake body,
 or food object. Continuously draws and updates screen."""
+
 
 def main():
     pygame.init()
