@@ -315,6 +315,7 @@ def main():
         screen.fill(BLACK)
         for view in views:  # uses view functions of view objects to draw their respective models
             view.draw(screen)
+        pygame.display.update()
 
         if snake.check_collision():  # resets game if snake collides with itself is true
             for model in models:
@@ -343,7 +344,6 @@ def main():
         if score.val == 99:  # ends game when score reaches 99
             running = False
 
-        pygame.display.update()
         time.sleep(.1-.01*math.sqrt(score.val))  # pauses game to make it playable, pause time decreses as a function of score
 
     pygame.quit()
